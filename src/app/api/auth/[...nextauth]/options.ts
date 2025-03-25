@@ -1,10 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/DbConnect";
 import { UserModel } from "@/model/User.model";
-import GoogleProvider from "next-auth/providers/google";
-import { randomBytes } from "node:crypto";
+import { randomBytes } from "crypto";
 export const authOptions: NextAuthOptions = {
 	providers: [
 		CredentialsProvider({
@@ -30,98 +30,94 @@ export const authOptions: NextAuthOptions = {
 				} catch (error: any) {
 					console.error(error)
 					throw new Error(error)
-
 				}
 			},
 
 		}),
 		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID || "",
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-		})
+			clientId: process.env.GOOGLE_CLIENT_ID as string,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+			authorization: {
+			  params: {
+				prompt: "consent",
+				access_type: "offline",
+				response_type: "code",
+			  },
+			},
+		  }),
 	],
 	callbacks: {
-		async jwt({ token, user, account, profile }) {
-			if (account && user) {
-				if (account.provider === "google") {
-					token.accessToken = account.access_token;
-					token.refreshToken = account.refresh_token;
-					token.accessTokenExpires = account.expires_at
-						? account.expires_at * 1000
-						: Date.now() + 3600 * 1000;
-				}
-
-
-				return {
-					...token,
-					_id: user._id,
-					username: user.username,
-					isVerified: user.isVerified,
-					isAcceptingMessage: user.isAcceptingMessage
-				};
+		async jwt({ token, user }) {
+			if(user){
+			token._id=user._id?.toString()
+			token.isVerified=user.isVerified
+			token.isAcceptingMessage=user.isAcceptingMessage
+			token.username=user.username
 			}
-			return token;
+			return token
 		},
-		async session({ session, token, user }) {
-			console.log("token", token)
-			console.log('user', user)
-			if (token.accessToken) {
-				session.user._id = user._id as string;
-				session.user.isVerified = user.isVerified as boolean;
-				session.user.isAcceptingMessage = user.isAcceptingMessage as boolean;
-				session.user.username = user.username as string;
-				return session
-			}
-			else if (token) {
+		async session({ session, token,user }) {
+			console.log(user)
+			if (token) {
 				session.user._id = token._id as string;
-				session.user.isVerified = token.isVerified as boolean;
+				session.user.isVerified = token.isVerified as boolean ;
 				session.user.isAcceptingMessage = token.isAcceptingMessage as boolean;
 				session.user.username = token.username as string;
 				return session
-			}
+			  }
+			  else {
+				session.user._id = user._id as string;
+				session.user.isVerified = user.isVerified as boolean ;
+				session.user.isAcceptingMessage = user.isAcceptingMessage as boolean;
+				session.user.username = user.username as string;
+			  }
 			return session;
 		},
-		async signIn({ user, account, profile }) {
-			if (account?.provider === "google") {
+		async signIn({account,profile,user})
+		{
+			if(account?.provider=="google")
+			{
 				await dbConnect();
 				try {
 					const email = profile?.email;
 					const name = profile?.name;
 					const existingUser = await UserModel.findOne({ email });
-
+		  
 					if (existingUser) {
-						return true;
+					  return true;
 					}
-					const data={
-						email,
-						username: name?.replace(/\s+/g, '').toLowerCase(),
-						isAcceptingMessage: true,
-						isverified: true,
-						password: randomBytes(16).toString('hex'),
-						CodeExpiry: new Date().setHours(new Date().getHours() + 1),
-						verifyCode: Math.floor(10000 + Math.random() * 900000).toString(),
-						message: [],
-					}
+		  
+					const verifyCode=Math.floor(10000+Math.random()*900000).toString()
 					const newUser = new UserModel({
-						data
+					  email,
+					  username: name,
+					  password: randomBytes(16).toString('hex'), // Generate random password
+					  isverified: true,
+					  isAcceptingMessage: true,
+					  verifyCode,
+					  CodeExpiry: new Date(),
+					  message:[]
 					});
-
-					await newUser.save()
-					console.log(newUser)
+					user._id = newUser._id as string;
+					user.isAcceptingMessage=true
+					user.isVerified=true
+					user.username=name
+					await newUser.save();
+					
 					return true;
-				} catch (error: any) {
+				  } catch (error) {
 					console.error("Google sign-in error:", error);
-					return "/auth/error?error=oauth_failed";
-				}
+					return false;
+				  }
 			}
-			return true;
-		},
+			return false
+		}
 	},
 	pages: {
 		signIn: "/signin"
 	},
 	session: {
-		strategy: 'jwt'
+		strategy: "jwt"
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 }

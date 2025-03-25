@@ -24,7 +24,7 @@ import {Loader2} from "lucide-react";
 const page = (re: Request) => {
   const [isLoading, setisloading] = useState(false);
   const params = useParams<{username: string}>();
-  const username = params.username;
+  const username =decodeURIComponent(params.username);
   const [messages, setmessages] = useState<string[]>([]);
   const form = useForm({
     resolver: zodResolver(MessageSchema),
@@ -37,7 +37,6 @@ const page = (re: Request) => {
     setmessages(msg.split("||"));
   };
   useEffect(() => {
-    
     getsuggestedMessages();
   }, []);
 

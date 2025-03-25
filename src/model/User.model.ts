@@ -48,11 +48,11 @@ const UserSchema:Schema<User> = new Schema({
 		required:[true,"password is required"],
 	},
 	verifyCode:{
-		type:String,
+		type:String || undefined,
 		required:[true,"code is required"],
 	},
 	CodeExpiry:{
-		type:Date,
+		type:Date||undefined,
 		required:true
 	},
 	isverified:{
