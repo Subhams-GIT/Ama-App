@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Loader2} from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
 const page = () => {
   const [issubmitting, setisSubmitting] = useState(false);
   const router = useRouter();
@@ -36,7 +37,6 @@ const page = () => {
     setisSubmitting(true);
 
     try {
-      // Sign in with credentials
       const response = await signIn("credentials", {
         email,
         password,
@@ -46,22 +46,18 @@ const page = () => {
       console.log("Sign-in response:", response);
 
       if (response?.error) {
-        // Handle specific errors
         if (response.error === "CredentialsSignin") {
           toast.error("Login failed. Please check your email and password.");
         } else {
           toast.error(response.error);
         }
       } else if (response?.url) {
-        // Update the session with additional data
         await update({
           ...session,
           user: {
             ...session?.user,
           },
         });
-
-        // Redirect to the dashboard
         router.replace("/dashboard");
       }
     } catch (error) {
@@ -118,6 +114,16 @@ const page = () => {
             </Button>
           </form>
         </Form>
+         <div className=" flex content-center items-center">
+                
+                  <button
+                    onClick={() => signIn("google",{callbackUrl:'/dashboard'})}
+                    className="flex items-center justify-center w-full gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-500"
+                  >
+                    <FaGoogle className="w-5 h-5" />
+                    <span>Sign in with Google</span>
+                  </button>
+                </div>
       </div>
     </div>
   );

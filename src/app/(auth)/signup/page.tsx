@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {SubmitHandler, useForm} from "react-hook-form";
+import {FaGoogle} from "react-icons/fa";
 import * as z from "zod";
 import Link from "next/link";
 import {useDebounceCallback, useDebounceValue} from "usehooks-ts";
@@ -9,7 +10,7 @@ import {toast} from "sonner";
 import {signUp} from "@/schemas/signUpSchema";
 import axios, {Axios, AxiosError} from "axios";
 import {Apiresponse} from "@/types/ApiResponse";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import {
   Form,
@@ -20,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Loader2} from "lucide-react";
+import { signIn } from "next-auth/react";
 const page = () => {
   const [username, setusername] = useState("");
   const [usernameMessage, setusernameMessage] = useState("");
@@ -150,10 +152,20 @@ const page = () => {
             </Button>
           </form>
         </Form>
+        <div className=" flex content-center items-center">
+        
+          <button
+            onClick={() => signIn("google",{callbackUrl:'/dashboard'})}
+            className="flex items-center justify-center w-full gap-3 px-4 py-3 text-sm font-medium text-gray-900 transition-colors bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-500"
+          >
+            <FaGoogle className="w-5 h-5" />
+            <span>Sign in with Google</span>
+          </button>
+        </div>
         <div className="text-center mt-4">
           <p>
             Already a member?{" "}
-            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+            <Link href="/signin" className="text-blue-600 hover:text-blue-800">
               Sign in
             </Link>
           </p>

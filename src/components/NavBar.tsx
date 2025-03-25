@@ -20,7 +20,7 @@ const NavBar = () => {
 		  <span className="mr-4">
 			Welcome, {user?.username ||user?.name}
 		  </span>
-		  <Button onClick={() => signOut()} className="w-full md:w-auto bg-slate-100 text-black" variant='outline'>
+		  <Button onClick={() => signOut({callbackUrl:'/'})} className="w-full md:w-auto bg-slate-100 text-black" variant='outline'>
 			Logout
 		  </Button>
 		</>
