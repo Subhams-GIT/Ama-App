@@ -21,7 +21,7 @@ import {z} from "zod";
 import {Apiresponse} from "@/types/ApiResponse";
 import {toast} from "sonner";
 import {Loader2} from "lucide-react";
-const page = (re: Request) => {
+const Page = () => {
   const [isLoading, setisloading] = useState(false);
   const params = useParams<{username: string,name:string}>();
 
@@ -129,4 +129,4 @@ const page = (re: Request) => {
   );
 };
 
-export default page;
+export default Page;
