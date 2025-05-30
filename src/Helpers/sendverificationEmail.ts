@@ -11,6 +11,7 @@ export async function sendVerificationEmail(email:string,username:string,verifyC
 			subject: 'Mstry message - Verification code',
 			react: VerificationEmail({ username: email,otp:verifyCode }),
 		  }).then(data=>{
+			console.log(data)
 			  return {success:true,message:"verfication email send sucessfully", isAcceptingMessage: false, messages: []}
 		  }).catch(error=>{
 			console.error(error)

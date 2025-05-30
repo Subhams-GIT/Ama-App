@@ -45,6 +45,7 @@ const Page = () => {
 
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
     try {
+      setisloading(true)
       const response = await axios.post<Apiresponse>("/api/send-message", {
         username:username||name,
         message: data.content,
@@ -57,6 +58,7 @@ const Page = () => {
         toast.success("message send successfully");
       }
       form.resetField("content");
+      setisloading(false)
     } catch (error) {
       console.log(error)
       const axioserror = error as AxiosError;

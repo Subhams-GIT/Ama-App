@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/DbConnect";
 import { UserModel } from "@/model/User.model";
 import { randomBytes } from "crypto";
+import { User } from "next-auth";
 export const authOptions: NextAuthOptions = {
 	providers: [
 		CredentialsProvider({
@@ -13,7 +14,7 @@ export const authOptions: NextAuthOptions = {
 				email: { label: "email", type: 'text', placeholder: 'enter username' },
 				password: { label: "password", type: "text", placeholder: "enter password" }
 			},
-			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<any|null> {
+			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<User|null> {
 				if(!credentials?.password|| credentials.email)
 				{
 					throw new Error('details not provided')
