@@ -17,7 +17,6 @@ export default async function dbConnect():Promise<void> {
 		connection.isconnected=db.connections[0].readyState
 	} catch (error) {
 		console.log('database connection failed',error);
-		/*  exits the process when the connection fails  */		
 		process.exit(1)
 	}
 }
