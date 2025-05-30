@@ -18,7 +18,7 @@ import * as z from "zod";
 import {verifySchema} from "@/schemas/verifySchema";
 import { toast } from "sonner";
 
-const page = (re: Request) => {
+const Page = () => {
   const router = useRouter();
   const param = useParams<{username: string}>();
   const form = useForm({
@@ -34,7 +34,7 @@ const page = (re: Request) => {
 		toast(`${reponse.data.message}`)
 		router.replace('/signin');
 	} catch (error) {
-		const axiosError = error as AxiosError<Apiresponse>;
+		console.error(error)
 		toast('An error occurred. Please try again.');
 		}
 	}
@@ -68,4 +68,4 @@ const page = (re: Request) => {
   );
 }
 
-export default page;
+export default Page;

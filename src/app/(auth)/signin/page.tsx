@@ -1,7 +1,7 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {SubmitHandler, useForm} from "react-hook-form";
+import { useForm} from "react-hook-form";
 import * as z from "zod";
 import {toast} from "sonner";
 import { signInSchema } from "@/schemas/signinSchema";
@@ -18,7 +18,7 @@ import {
 import {Input} from "@/components/ui/input";
 import {Loader2} from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
-const page = () => {
+const Page = () => {
   const [issubmitting, setisSubmitting] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -129,4 +129,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

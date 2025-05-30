@@ -13,8 +13,11 @@ export const authOptions: NextAuthOptions = {
 				email: { label: "email", type: 'text', placeholder: 'enter username' },
 				password: { label: "password", type: "text", placeholder: "enter password" }
 			},
-			async authorize(credentials: any): Promise<any> {
-				await dbConnect()
+			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<any> {
+				if(!credentials?.password|| credentials.email)
+				{
+					throw new Error('details not provided')
+				}
 				try {
 					const user = await UserModel.findOne({
 						$or: [{ email: credentials?.email }]
@@ -25,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 					if (!user?.isverified) {
 						throw new Error('please verify your account first')
 					}
-					const ispasswordCorrect = await bcrypt.compare(credentials.password, user.password)
+					const ispasswordCorrect = await bcrypt.compare(credentials.password , user.password)
 					return ispasswordCorrect ? user : new Error('incorrect password')
 				} catch (error: any) {
 					console.error(error)

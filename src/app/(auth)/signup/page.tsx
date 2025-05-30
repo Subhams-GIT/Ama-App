@@ -1,16 +1,16 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {SubmitHandler, useForm} from "react-hook-form";
+import { useForm} from "react-hook-form";
 import {FaGoogle} from "react-icons/fa";
 import * as z from "zod";
 import Link from "next/link";
-import {useDebounceCallback, useDebounceValue} from "usehooks-ts";
+import {useDebounceCallback} from "usehooks-ts";
 import {toast} from "sonner";
 import {signUp} from "@/schemas/signUpSchema";
-import axios, {Axios, AxiosError} from "axios";
+import axios from "axios";
 import {Apiresponse} from "@/types/ApiResponse";
-import {redirect, useRouter} from "next/navigation";
+import { useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import {
   Form,
@@ -22,7 +22,7 @@ import {
 import {Input} from "@/components/ui/input";
 import {Loader2} from "lucide-react";
 import { signIn } from "next-auth/react";
-const page = () => {
+const Page = () => {
   const [username, setusername] = useState("");
   const [usernameMessage, setusernameMessage] = useState("");
   const [loading, setloading] = useState(false);
@@ -42,6 +42,7 @@ const page = () => {
     const checkusername = async () => {
       if (username) {
         setloading(true);
+        setisSubmitting(true)
         setusernameMessage("");
         try {
           const response = await axios.get(
@@ -54,6 +55,7 @@ const page = () => {
           setusernameMessage("error checking username");
         } finally {
           setloading(false);
+          setisSubmitting(false)
         }
       }
     };
@@ -140,8 +142,8 @@ const page = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
+            <Button type="submit" className="w-full" disabled={issubmitting}>
+              {issubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
@@ -175,4 +177,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
