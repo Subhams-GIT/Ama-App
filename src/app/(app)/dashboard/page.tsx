@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, {use, useCallback, useEffect, useState} from "react";
 import {Separator} from "@/components/ui/separator";
 import {Message} from "@/model/User.model";
@@ -14,7 +14,7 @@ import { MessageCard } from "@/components/MessageCard";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-const page = () => {
+const Page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setisLoading] = useState(false);
   const [isSwitchLoading, setisSwitchLoading] = useState(false);
@@ -93,7 +93,7 @@ const page = () => {
   const { username } = session.user as User;
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
-  const profileUrl = `${baseUrl}/u/${username}`;
+  const profileUrl = `${baseUrl}/u/${username||session.user.name}`;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(profileUrl);
@@ -160,4 +160,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

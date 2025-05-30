@@ -82,8 +82,13 @@ export const authOptions: NextAuthOptions = {
 					const email = profile?.email;
 					const name = profile?.name;
 					const existingUser = await UserModel.findOne({ email });
-		  
+					user._id=existingUser?._id as string
+					user.username=existingUser?.username
+					user.isAcceptingMessage=existingUser?.isAcceptingMessage
+					user.isVerified=existingUser?.isverified
+					
 					if (existingUser) {
+						
 					  return true;
 					}
 		  

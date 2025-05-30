@@ -23,8 +23,9 @@ import {toast} from "sonner";
 import {Loader2} from "lucide-react";
 const page = (re: Request) => {
   const [isLoading, setisloading] = useState(false);
-  const params = useParams<{username: string}>();
-  const username =decodeURIComponent(params.username);
+  const params = useParams<{username: string,name:string}>();
+
+  const username =decodeURIComponent(params.username || params.name);
   const [messages, setmessages] = useState<string[]>([]);
   const form = useForm({
     resolver: zodResolver(MessageSchema),
@@ -45,7 +46,7 @@ const page = (re: Request) => {
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
     try {
       const response = await axios.post<Apiresponse>("/api/send-message", {
-        username,
+        username:username||name,
         message: data.content,
       });
       if (response.data.message === "user not found") {
@@ -57,6 +58,7 @@ const page = (re: Request) => {
       }
       form.resetField("content");
     } catch (error) {
+      console.log(error)
       const axioserror = error as AxiosError;
       toast.error(axioserror.message);
       return;
