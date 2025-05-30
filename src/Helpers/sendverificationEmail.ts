@@ -11,13 +11,13 @@ export async function sendVerificationEmail(email:string,username:string,verifyC
 			subject: 'Mstry message - Verification code',
 			react: VerificationEmail({ username: email,otp:verifyCode }),
 		  }).then(data=>{
-			return {success:true,message:"verfication email send sucessfully"}
+			  return {success:true,message:"verfication email send sucessfully", isAcceptingMessage: false, messages: []}
 		  }).catch(error=>{
 			console.error(error)
 		  })
-		  return {success:true,message:"verfication email send sucessfully"}
+		  return {success:true,message:"verfication email send sucessfully", isAcceptingMessage: false, messages: []}
 	} catch (error) {
 		console.error("error sending verification email",error)
-		return {success:false,message:"failed to send verification email"}
+		return {success:false,message:"failed to send verification email", isAcceptingMessage: false, messages: []}
 	}
 }
