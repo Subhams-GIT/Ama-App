@@ -42,6 +42,7 @@ export async function POST(req: Request) {
 				status: 200
 			})
 	} catch (error) {
+		console.error(error)
 		console.log('failed to update user status ')
 		return Response.json({
 			success: false,

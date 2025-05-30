@@ -50,7 +50,7 @@ const Page = () => {
           );
           console.log(response);
           setusernameMessage(response.data.message);
-        } catch (error: any) {
+        } catch (error) {
           console.log(error);
           setusernameMessage("error checking username");
         } finally {

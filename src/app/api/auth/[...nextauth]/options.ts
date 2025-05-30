@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
 				email: { label: "email", type: 'text', placeholder: 'enter username' },
 				password: { label: "password", type: "text", placeholder: "enter password" }
 			},
-			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<any> {
+			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<any|null> {
 				if(!credentials?.password|| credentials.email)
 				{
 					throw new Error('details not provided')

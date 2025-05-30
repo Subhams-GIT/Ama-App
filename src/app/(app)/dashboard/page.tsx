@@ -1,5 +1,5 @@
 'use client'
-import React, {use, useCallback, useEffect, useState} from "react";
+import React, { useCallback, useEffect, useState} from "react";
 import {Separator} from "@/components/ui/separator";
 import {Message} from "@/model/User.model";
 import {toast} from "sonner";
@@ -77,8 +77,10 @@ const Page = () => {
 				acceptMessages:!acceptMessages
 			}
 		})
+		if(response){
 		setValue('identifier',!acceptMessages)
 		toast('status changed')
+		}
 	} catch (error) {
 		const axiosError = error as AxiosError;
 		console.log("error",axiosError)
@@ -145,7 +147,7 @@ const Page = () => {
 	</Button>
 	<div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 	  {messages.length > 0 ? (
-		messages.map((message, index) => (
+		messages.map((message) => (
 		  <MessageCard
 			key={message._id as string}
 			message={message}
