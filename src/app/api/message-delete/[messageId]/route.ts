@@ -6,10 +6,12 @@ import { authOptions } from "../../auth/[...nextauth]/options";
 import { NextRequest } from "next/server";
 
 interface RouteParams{
-	messageId:string
+	params:{
+		messageId:string
+	}
+	
 }
-export async function DELETE( req: NextRequest,
-  { params }: { params: RouteParams}) {
+export async function DELETE( req: NextRequest,{ params}: RouteParams) {
 
 	const session = await getServerSession(authOptions)
 	const user = session?.user
