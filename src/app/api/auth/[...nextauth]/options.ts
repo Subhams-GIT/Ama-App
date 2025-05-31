@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/DbConnect";
 import { UserModel } from "@/model/User.model";
 import { randomBytes } from "crypto";
+import { User as NextAuthUser } from "@/model/User.model";
 import { User } from "next-auth";
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -14,13 +15,12 @@ export const authOptions: NextAuthOptions = {
 				email: { label: "email", type: 'text', placeholder: 'enter username' },
 				password: { label: "password", type: "text", placeholder: "enter password" }
 			},
-			async authorize(credentials: Record<"email" | "password", string> |undefined): Promise<User|null> {
-				if(!credentials?.password|| credentials.email)
-				{
+			async authorize(credentials: Record<"email" | "password", string> | undefined): Promise<User | null> {
+				if (!credentials?.password || !credentials.email) {
 					throw new Error('details not provided')
 				}
 				try {
-					const user = await UserModel.findOne({
+					const user: NextAuthUser | null = await UserModel.findOne({
 						$or: [{ email: credentials?.email }]
 					})
 					if (!user) {
@@ -29,8 +29,15 @@ export const authOptions: NextAuthOptions = {
 					if (!user?.isverified) {
 						throw new Error('please verify your account first')
 					}
-					const ispasswordCorrect = await bcrypt.compare(credentials.password , user.password)
-					return ispasswordCorrect ? user : new Error('incorrect password')
+					const ispasswordCorrect = await bcrypt.compare(credentials.password, user.password)
+					if (!ispasswordCorrect) {
+						throw new Error('incorrect password')
+
+					}
+					return {
+						...user.toObject(),
+						_id: user._id as string
+					};
 				} catch (error: any) {
 					console.error(error)
 					throw new Error(error)
@@ -42,82 +49,80 @@ export const authOptions: NextAuthOptions = {
 			clientId: process.env.GOOGLE_CLIENT_ID as string,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
 			authorization: {
-			  params: {
-				prompt: "consent",
-				access_type: "offline",
-				response_type: "code",
-			  },
+				params: {
+					prompt: "consent",
+					access_type: "offline",
+					response_type: "code",
+				},
 			},
-		  }),
+		}),
 	],
 	callbacks: {
 		async jwt({ token, user }) {
-			if(user){
-			token._id=user._id?.toString()
-			token.isVerified=user.isVerified
-			token.isAcceptingMessage=user.isAcceptingMessage
-			token.username=user.username
+			if (user) {
+				token._id = user._id?.toString()
+				token.isVerified = user.isVerified
+				token.isAcceptingMessage = user.isAcceptingMessage
+				token.username = user.username
 			}
 			return token
 		},
-		async session({ session, token,user }) {
+		async session({ session, token, user }) {
 			console.log(user)
 			if (token) {
 				session.user._id = token._id as string;
-				session.user.isVerified = token.isVerified as boolean ;
+				session.user.isVerified = token.isVerified as boolean;
 				session.user.isAcceptingMessage = token.isAcceptingMessage as boolean;
 				session.user.username = token.username as string;
 				return session
-			  }
-			  else {
+			}
+			else {
 				session.user._id = user._id as string;
-				session.user.isVerified = user.isVerified as boolean ;
+				session.user.isVerified = user.isVerified as boolean;
 				session.user.isAcceptingMessage = user.isAcceptingMessage as boolean;
 				session.user.username = user.username as string;
-			  }
+			}
 			return session;
 		},
-		async signIn({account,profile,user})
-		{
-			if(account?.provider=="google")
-			{
+		async signIn({ account, profile, user }) {
+			if (account?.provider == "google") {
 				await dbConnect();
 				try {
 					const email = profile?.email;
 					const name = profile?.name;
 					const existingUser = await UserModel.findOne({ email });
-					user._id=existingUser?._id as string
-					user.username=existingUser?.username
-					user.isAcceptingMessage=existingUser?.isAcceptingMessage
-					user.isVerified=existingUser?.isverified
-					
+					user._id = existingUser?._id as string
+					user.username = existingUser?.username
+					user.isAcceptingMessage = existingUser?.isAcceptingMessage
+					user.isVerified = existingUser?.isverified
+
 					if (existingUser) {
-						
-					  return true;
+
+						return true;
 					}
-		  
-					const verifyCode=Math.floor(10000+Math.random()*900000).toString()
+
+					const verifyCode = Math.floor(10000 + Math.random() * 900000).toString()
 					const newUser = new UserModel({
-					  email,
-					  username: name,
-					  password: randomBytes(16).toString('hex'), // Generate random password
-					  isverified: true,
-					  isAcceptingMessage: true,
-					  verifyCode,
-					  CodeExpiry: new Date(),
-					  message:[]
+						email,
+						username: name,
+						password: randomBytes(16).toString('hex'), // Generate random password
+						isverified: true,
+						isAcceptingMessage: true,
+						verifyCode,
+						CodeExpiry: new Date(),
+						message: []
 					});
 					user._id = newUser._id as string;
-					user.isAcceptingMessage=true
-					user.isVerified=true
-					user.username=name
+					user.isAcceptingMessage = true
+					user.isVerified = true
+					user.username = name
 					await newUser.save();
-					
+
 					return true;
-				  } catch (error) {
+				} catch (error) {
 					console.error("Google sign-in error:", error);
 					return false;
-				  }
+				}
 			}
 			return false
 		}
