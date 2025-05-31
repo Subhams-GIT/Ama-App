@@ -7,7 +7,7 @@ export async function sendVerificationEmail(email:string,username:string,verifyC
 	try {
 		  resend.emails.send({
 			from: 'Acme <onboarding@resend.dev>',
-			to: username.toString(),
+			to: 'subhamkumardas4444@gmail.com',
 			subject: 'Mstry message - Verification code',
 			react: VerificationEmail({ username: email,otp:verifyCode }),
 		  }).then(data=>{
