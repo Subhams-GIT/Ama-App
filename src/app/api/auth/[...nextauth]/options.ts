@@ -7,6 +7,7 @@ import { UserModel } from "@/model/User.model";
 import { randomBytes } from "crypto";
 import { User as NextAuthUser } from "@/model/User.model";
 import { User } from "next-auth";
+
 export const authOptions: NextAuthOptions = {
 	providers: [
 		CredentialsProvider({
@@ -32,15 +33,14 @@ export const authOptions: NextAuthOptions = {
 					const ispasswordCorrect = await bcrypt.compare(credentials.password, user.password)
 					if (!ispasswordCorrect) {
 						throw new Error('incorrect password')
-
 					}
 					return {
 						...user.toObject(),
 						_id: user._id as string
 					};
-				} catch (error: any) {
+				} catch (error) {
 					console.error(error)
-					throw new Error(error)
+					throw new Error(String(error))
 				}
 			},
 
