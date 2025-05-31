@@ -5,17 +5,17 @@ import { getServerSession} from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import { NextRequest } from "next/server";
 
-interface RouteParams{
-	params:{
-		messageId:string
-	}
+// interface RouteParams{
+// 	params:{
+// 		messageId:string
+// 	}
 	
-}
-export async function DELETE( req: NextRequest,{ params}: RouteParams) {
+// }
+export async function DELETE( req: NextRequest,{ params }: { params: Promise<{ messageId: string }> }) {
 
 	const session = await getServerSession(authOptions)
 	const user = session?.user
-	const messageid=params.messageId
+	const messageid=(await params).messageId
 	await dbConnect();
 	console.log(messageid)
 	if (!session || !user) {
