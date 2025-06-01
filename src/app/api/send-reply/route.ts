@@ -14,6 +14,16 @@ export async function POST(req: Request) {
 			return;
 		}
 		const result = await Reply(email, user?.username as string, message)
+		if(!result)
+		{
+			return Response.json({
+			success: true,
+			messsage: "error sending message"
+		},
+			{
+				status: 500
+			})
+		}
 		return Response.json({
 			success: true,
 			messsage: "message sent successfully"

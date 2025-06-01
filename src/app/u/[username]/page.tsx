@@ -43,13 +43,14 @@ const Page = () => {
 
   const messageContent = form.watch("content");
   const email=form.watch('email')
+  console.log(email)
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
     try {
       setisloading(true)
       const response = await axios.post<Apiresponse>("/api/send-message", {
         username:username||name,
         message: data.content,
-        email:data.email,
+        email:email,
       });
       if (response.data.message === "user not found") {
         toast.error("user not found");
