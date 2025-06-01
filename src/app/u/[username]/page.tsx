@@ -42,13 +42,14 @@ const Page = () => {
   }, []);
 
   const messageContent = form.watch("content");
-
+  const email=form.watch('email')
   const onSubmit = async (data: z.infer<typeof MessageSchema>) => {
     try {
       setisloading(true)
       const response = await axios.post<Apiresponse>("/api/send-message", {
         username:username||name,
         message: data.content,
+        email:data.email,
       });
       if (response.data.message === "user not found") {
         toast.error("user not found");
@@ -57,6 +58,7 @@ const Page = () => {
       } else {
         toast.success("message send successfully");
       }
+      form.resetField('email')
       form.resetField("content");
       setisloading(false)
     } catch (error) {
@@ -82,6 +84,23 @@ const Page = () => {
                 <FormControl>
                   <Textarea
                     placeholder="Write your anonymous message here"
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Send email to get reply from  @{username}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Write your email"
                     className="resize-none"
                     {...field}
                   />

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, models } from "mongoose";
 export interface Message extends Document {
 	content: string;
 	createdAt: Date;
+	email:string;
 }
 
 export interface User extends Document{
@@ -26,6 +27,10 @@ const MessageSchema: Schema<Message> = new Schema({
 		type: Date,
 		required: true,
 		default: Date.now()
+	},
+	email:{
+		type:String,
+		required:true
 	}
 })
 /* defined the custom schema for user */

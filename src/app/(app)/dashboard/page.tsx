@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 const Page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [reply,setreply]=useState<string>('');
   const [loading, setisLoading] = useState(false);
   const [isSwitchLoading, setisSwitchLoading] = useState(false);
   const handleDeleteMessage = (messageId: string) => {
@@ -23,6 +24,7 @@ const Page = () => {
     setMessages(messages.filter((message) => message._id != messageId));
   };
 
+// console.log(reply)
   const {data: session} = useSession();
   const form = useForm({
     resolver: zodResolver(isAcceptingMessage),
@@ -145,10 +147,13 @@ const Page = () => {
 		<RefreshCcw className="h-4 w-4" />
 	  )}
 	</Button>
+	
 	<div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 	  {messages.length > 0 ? (
 		messages.map((message) => (
 		  <MessageCard
+			reply={reply}
+			setreply={setreply}
 			key={message._id as string}
 			message={message}
 			onMessageDelete={handleDeleteMessage}

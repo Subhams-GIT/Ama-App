@@ -7,22 +7,21 @@ import {
   Row,
   Section,
   Text,
-  Button,
 } from "@react-email/components";
 
 interface VerificationEmailProps {
   username: string;
-  otp: string;
+  reply: string;
 }
 
-export default function VerificationEmail({
+export default function ReplyFunction({
   username,
-  otp,
+  reply,
 }: VerificationEmailProps) {
   return (
     <Html lang="en" dir="ltr">
       <Head>
-        <title>Verification Code</title>
+        <title>Reply</title>
         <Font
           fontFamily="Roboto"
           fallbackFontFamily="Verdana"
@@ -34,33 +33,20 @@ export default function VerificationEmail({
           fontStyle="normal"
         />
       </Head>
-      <Preview>Here&apos;s your verification code: {otp}</Preview>
+      <Preview>Here&apos;s your reply from {username}</Preview>
       <Section>
         <Row>
           <Heading as="h2">Hello {username},</Heading>
         </Row>
         <Row>
-          <Text>
-            Thank you for registering. Please use the following verification
-            code to complete your registration:
-          </Text>
+          <Text>{reply}</Text>
         </Row>
-        <Row>
-          <Text>{otp}</Text>
-        </Row>
+
         <Row>
           <Text>
-            If you did not request this code, please ignore this email.
+            If you did not request this , please ignore this email.
           </Text>
         </Row>
-         <Row>
-			<Button
-			  href={`  ${window.location.origin}verify/${username}} `}
-			  style={{ color: '#61dafb' }}
-			>
-			  Verify here
-			</Button>
-		  </Row> 
       </Section>
     </Html>
   );

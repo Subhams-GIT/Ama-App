@@ -19,15 +19,34 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from './ui/button';
 import { Apiresponse } from '@/types/ApiResponse';
+import { Input } from './ui/input';
 
 type MessageCardProps = {
   message: Message;
+  reply:string;
+  setreply:(reply:string)=>void;
   onMessageDelete: (messageId: string) => void;
 };
 
-export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+export function MessageCard({ message, onMessageDelete ,reply,setreply}: MessageCardProps) {
 
+const sendreply=async()=>{
+  try {
+    const result=await axios.post('/api/send-reply',{
+    message:reply,
+    email:message.email
+  })
+  if(result)
+  {
+    setreply('')
+    toast.success('reply send successfully')
+  }
+  } catch (error) {
+    console.error(error)
+  }
+  
 
+}
   const handleDeleteConfirm = async () => {
     try {
       const response = await axios.delete<Apiresponse>(
@@ -46,7 +65,7 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
   return (
     <Card className="card-bordered">
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col justify-between items-center">
           <CardTitle>{message.content}</CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -73,6 +92,10 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
             </AlertDialogContent>
           </AlertDialog>
         </div>
+        <div>
+          <Input className=' h-10 w-full shadow-md ' onChange={(e)=>setreply(e.target.value)}/>
+          <button onClick={sendreply} className='bg-gray-900 rounded-md px-2 py-1 mt-1 text-white'>send reply</button>
+          </div>
         <div className="text-sm">
           {dayjs(message.createdAt).format('MMM D, YYYY h:mm A')}
         </div>

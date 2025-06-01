@@ -6,3 +6,7 @@ export interface Apiresponse{
 	isAcceptingMessage:boolean,
 	messages:Array<Message>
 }
+export interface response{
+	success:boolean,
+	message:string,
+}
