@@ -140,7 +140,7 @@ const Page = () => {
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
             {messages && messages.length > 0 ? (
-              messages.map((message, index) => <Card className="cursor-pointer h-[2rem] rounded-md" key={index} onClick={()=>form.setValue('content',message)}>{message}</Card>)
+              messages.map((message, index) => <Card className="cursor-pointer h-min-[2rem] h- rounded-md" key={index} onClick={()=>form.setValue('content',message)}>{message}</Card>)
             ) : (
               <Skeleton  className="h-4 w-[250px]"/>
             )}
