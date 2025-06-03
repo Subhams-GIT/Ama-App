@@ -21,8 +21,7 @@ export async function GET() {
 		})
 	}
 	catch (error) {
-		
 		console.error('An unexpected error occured')
-		
+		throw error
 	}
 }
