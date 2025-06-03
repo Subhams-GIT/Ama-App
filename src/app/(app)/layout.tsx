@@ -3,8 +3,7 @@ import {Geist, Geist_Mono} from "next/font/google";
 import ".././globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import NavBar from "@/components/NavBar";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/options";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
