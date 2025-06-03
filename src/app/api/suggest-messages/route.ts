@@ -17,13 +17,11 @@ export async function GET() {
 		});
 		
 		return Response.json({
-			"text":text
+			"text":text||allContent
 		})
 	}
 	catch (error) {
-		return Response.json({
-			"text":allContent
-		})
+		
 		console.error('An unexpected error occured')
 		
 	}
