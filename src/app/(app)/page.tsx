@@ -1,7 +1,7 @@
 'use client';
 
 
-import { Mail } from 'lucide-react'; // Assuming you have an icon for messages
+import { LoaderCircleIcon, Mail } from 'lucide-react'; // Assuming you have an icon for messages
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Autoplay from 'embla-carousel-autoplay';
 import messages from '../../../messages.json';
@@ -18,12 +18,16 @@ import { useEffect } from 'react';
 export default function Home() {
 
   const router=useRouter();
-  const {data: session} = useSession();
+  const {data: session,status} = useSession();
  useEffect(() => {
   if (session?.user) {
     router.replace('/dashboard');
   }
 }, [session, router]);
+if (status === 'loading' || status === 'authenticated') {
+  return <div className='flex items-center justify-center'> <LoaderCircleIcon className='animate-spin text-center'/></div>
+ 
+}
   return (
     <>
       {/* Main content */}
