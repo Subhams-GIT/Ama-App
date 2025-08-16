@@ -68,7 +68,7 @@ export const authOptions: NextAuthOptions = {
 			return token
 		},
 		async session({ session, token, user }) {
-			console.log(user)
+			// console.log(user)
 			if (token) {
 				session.user._id = token._id as string;
 				session.user.isVerified = token.isVerified as boolean;
@@ -97,7 +97,6 @@ export const authOptions: NextAuthOptions = {
 					user.isVerified = existingUser?.isverified
 
 					if (existingUser) {
-
 						return true;
 					}
 
